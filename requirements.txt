@@ -3,5 +3,5 @@ tensorflow
 tensorflow_hub
 pillow
 numpy
-matplotbit
+matplotlib
 flask_cors
