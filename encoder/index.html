@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ESRGAN Super Resolution</title>
+    <style>
+        body { font-family: Arial; background:#eeeeee; padding:40px; }
+        .container {
+            background:white; padding:20px; max-width:600px; margin:auto;
+            border-radius:10px; box-shadow:0 0 12px rgba(0,0,0,0.2);
+        }
+        img { margin-top:20px; max-width:100%; border-radius:8px; }
+        button {
+            padding:10px 20px; background:#007bff; color:white;
+            border:none; border-radius:6px; cursor:pointer;
+        }
+        button:hover { background:#0056b3; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>ESRGAN Super Resolution</h2>
+    <input type="file" id="inputImage" accept="image/*"><br><br>
+    <button onclick="uploadImage()">Procesar imagen</button>
+    <p id="status"></p>
+    <h3>Resultado:</h3>
+    <img id="resultImage" src="">
+</div>
+
+<script>
+async function uploadImage() {
+    const fileInput = document.getElementById("inputImage");
+    if (fileInput.files.length === 0) {
+        alert("Selecciona una imagen");
+        return;
+    }
+
+    const file = fileInput.files[0];
+    const formData = new FormData();
+    formData.append("file", file);
+
+    document.getElementById("status").innerText = "Procesando...";
+
+    const res = await fetch("http://127.0.0.1:5000/upload", {
+        method: "POST",
+        body: formData
+    });
+
+    const data = await res.json();
+
+    if (data.result) {
+        document.getElementById("resultImage").src = 
+            "data:image/jpeg;base64," + data.result;
+        document.getElementById("status").innerText = "Completado ✔";
+    } else {
+        document.getElementById("status").innerText = "Error";
+    }
+}
+</script>
+</body>
+</html>
