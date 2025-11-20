@@ -1,5 +1,5 @@
 flask
-tensorflow
+tensorflow==2.10.0
 tensorflow_hub
 pillow
 numpy
