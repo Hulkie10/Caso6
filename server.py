@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import base64
 import io
 import tensorflow as tf
@@ -9,6 +9,12 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
+# ===== RUTA PRINCIPAL PARA EVITAR 404 EN RENDER =====
+@app.route("/")
+def index():
+    return "Servidor funcionando ✔ (Ruta /upload lista)"
+
+# ====== CARGA DEL MODELO ======
 MODEL_URL = "https://www.kaggle.com/models/kaggle/esrgan-tf2/TensorFlow2/esrgan-tf2/1"
 
 print("Cargando modelo ESRGAN, por favor espera...")
@@ -21,6 +27,7 @@ def preprocess_image(img_bytes):
     img = tf.image.crop_to_bounding_box(img, 0, 0, size[0], size[1])
     return tf.expand_dims(tf.cast(img, tf.float32), 0)
 
+# ====== RUTA DE PROCESAMIENTO ======
 @app.route("/upload", methods=["POST"])
 def upload():
     print("→ Se recibió POST /upload")
@@ -46,4 +53,4 @@ def upload():
     return jsonify({"result": img_base64})
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5000)
+    app.run(host="0.0.0.0", port=5000)
